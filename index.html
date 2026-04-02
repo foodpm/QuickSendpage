@@ -3,64 +3,1088 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>QuickSend - 极速安全传输</title>
-    <meta name="description" content="下载 QuickSend - 最快的文件传输方式。" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Inter', 'sans-serif'],
-            },
-            colors: {
-              brand: {
-                50: '#fffbeb',
-                100: '#fef3c7',
-                200: '#fde68a',
-                300: '#fcd34d',
-                400: '#fbbf24',
-                500: '#f59e0b',
-                600: '#d97706',
-                700: '#b45309',
-                800: '#92400e',
-                900: '#78350f',
-              }
-            }
-          },
-        },
-      }
-    </script>
+    <title>Cover Generator - QuickSend</title>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="shortcut icon" href="./favicon.svg" />
     <style>
+      :root {
+        --bg: #0f172a;
+        --panel: rgba(30, 41, 59, 0.72);
+        --panel-border: rgba(255, 255, 255, 0.08);
+        --muted: rgba(226, 232, 240, 0.72);
+        --text: #f8fafc;
+        --brand: #f59e0b;
+        --brand-2: #fbbf24;
+        --danger: #ef4444;
+        --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      }
+
+      * { box-sizing: border-box; }
+
       body {
-        font-family: 'Inter', sans-serif;
-        background-color: #0f172a; /* Slate 900 */
-        color: #f8fafc; /* Slate 50 */
+        margin: 0;
+        background: radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.14) 0%, rgba(15, 23, 42, 0) 55%), var(--bg);
+        color: var(--text);
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
       }
-      .glass-nav {
-        background: rgba(15, 23, 42, 0.7);
+
+      .page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+
+      .brand-mark {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: var(--brand);
+        display: grid;
+        place-items: center;
+        box-shadow: 0 12px 28px rgba(245, 158, 11, 0.28);
+        color: #0f172a;
+      }
+
+      .brand-title {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.05;
+      }
+
+      .brand-title small {
+        font-weight: 600;
+        color: var(--muted);
+        letter-spacing: 0.02em;
+        margin-top: 2px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+
+      @media (min-width: 980px) {
+        .grid { grid-template-columns: 2fr 1fr; }
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 18px;
+        box-shadow: var(--shadow);
         backdrop-filter: blur(10px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        overflow: hidden;
       }
-      .hero-gradient {
-        background: radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.15) 0%, rgba(15, 23, 42, 0) 50%);
+
+      .preview {
+        padding: 14px;
+      }
+
+      .preview-inner {
+        position: relative;
+        border-radius: 14px;
+        background: rgba(2, 6, 23, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+        aspect-ratio: 16 / 9;
+        display: grid;
+        place-items: center;
+      }
+
+      canvas {
+        max-width: 100%;
+        max-height: 70vh;
+        height: auto;
+        width: auto;
+        display: block;
+        border-radius: 10px;
+      }
+
+      .toolbar {
+        display: flex;
+        gap: 10px;
+        margin-top: 12px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        appearance: none;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(15, 23, 42, 0.65);
+        color: var(--text);
+        padding: 10px 12px;
+        border-radius: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+      }
+
+      .btn:hover {
+        background: rgba(15, 23, 42, 0.85);
+        border-color: rgba(245, 158, 11, 0.45);
+      }
+
+      .btn:active { transform: scale(0.98); }
+
+      .btn-primary {
+        background: var(--brand);
+        border-color: rgba(0, 0, 0, 0);
+        color: #0f172a;
+      }
+
+      .btn-primary:hover {
+        background: var(--brand-2);
+      }
+
+      .controls {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .section {
+        padding: 14px;
+        border-radius: 14px;
+        background: rgba(2, 6, 23, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .section h3 {
+        margin: 0 0 10px;
+        font-size: 14px;
+        color: rgba(226, 232, 240, 0.86);
+        letter-spacing: 0.02em;
+      }
+
+      label {
+        display: block;
+        font-size: 12px;
+        color: rgba(226, 232, 240, 0.72);
+        margin-bottom: 6px;
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      @media (min-width: 520px) {
+        .row.two { grid-template-columns: 1fr 1fr; }
+        .row.three { grid-template-columns: 1fr 1fr 1fr; }
+      }
+
+      input[type="text"], select, input[type="number"] {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(15, 23, 42, 0.55);
+        color: var(--text);
+        outline: none;
+      }
+
+      input[type="text"]:focus, select:focus, input[type="number"]:focus {
+        border-color: rgba(245, 158, 11, 0.7);
+      }
+
+      input[type="range"] {
+        width: 100%;
+      }
+
+      input[type="color"] {
+        width: 100%;
+        height: 40px;
+        padding: 0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        background: transparent;
+      }
+
+      input[type="file"] {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px dashed rgba(255, 255, 255, 0.18);
+        background: rgba(15, 23, 42, 0.25);
+        color: rgba(226, 232, 240, 0.82);
+      }
+
+      .bg-swatches {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+
+      .swatch {
+        height: 44px;
+        border-radius: 12px;
+        border: 2px solid rgba(255, 255, 255, 0);
+        cursor: pointer;
+        transition: transform 120ms ease, border-color 120ms ease;
+      }
+
+      .swatch:hover { transform: translateY(-1px); border-color: rgba(255, 255, 255, 0.14); }
+      .swatch.active { border-color: rgba(245, 158, 11, 0.9); }
+
+      .hint {
+        font-size: 12px;
+        color: rgba(226, 232, 240, 0.6);
+        line-height: 1.5;
+        margin-top: 8px;
+      }
+
+      .error {
+        display: none;
+        margin-top: 12px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(239, 68, 68, 0.35);
+        background: rgba(239, 68, 68, 0.08);
+        color: rgba(254, 226, 226, 0.95);
+        font-size: 12px;
+        white-space: pre-wrap;
+      }
+
+      .footer {
+        margin-top: 24px;
+        padding: 16px;
+        text-align: center;
+        color: rgba(226, 232, 240, 0.5);
+        font-size: 12px;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .footer a {
+        color: rgba(245, 158, 11, 0.8);
+        text-decoration: none;
+        margin: 0 8px;
+      }
+
+      .footer a:hover {
+        color: rgba(251, 191, 36, 1);
+        text-decoration: underline;
       }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "lucide-react": "https://esm.sh/lucide-react@^0.561.0",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3"
-  }
-}
-</script>
-<link rel="stylesheet" href="/index.css">
-</head>
+  </head>
   <body>
-    <div id="root"></div>
-  <script type="module" src="/index.tsx"></script>
-</body>
+    <div class="page">
+      <div class="header">
+        <div class="brand">
+          <div class="brand-mark">
+            <svg width="18" height="18" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M62 15 L25 58 H50 L38 90 L78 42 H54 L62 15 Z" fill="#0f172a" stroke="#0f172a" stroke-width="8" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="brand-title">
+            <div>Cover Generator</div>
+            <small>本地可用 · 无需服务器 · 可下载 PNG</small>
+          </div>
+        </div>
+        <div class="toolbar">
+          <button class="btn btn-primary" id="btnDownload">下载 PNG</button>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="panel preview">
+          <div class="preview-inner" id="previewBox">
+            <canvas id="canvas"></canvas>
+          </div>
+          <div class="error" id="errorBox"></div>
+        </div>
+
+        <div class="panel controls">
+          <div class="section">
+            <h3>尺寸比例</h3>
+            <div class="row">
+              <label for="ratio">选择比例（内置常用尺寸）</label>
+              <select id="ratio">
+                <option value="16:9|1280|720">16:9（封面） 1280×720</option>
+                <option value="4:3|1024|768">4:3（PPT） 1024×768</option>
+                <option value="3:4|900|1200">3:4（竖版） 900×1200</option>
+                <option value="1:1|1080|1080">1:1（方形） 1080×1080</option>
+                <option value="9:16|720|1280">9:16（海报） 720×1280</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>背景</h3>
+            <div class="bg-swatches" id="bgSwatches"></div>
+            <div class="hint">也可以上传自定义图片作为背景（下方）。</div>
+            <div style="height: 10px"></div>
+            <div class="row">
+              <label for="bgUpload">上传背景图片</label>
+              <input id="bgUpload" type="file" accept="image/*" />
+            </div>
+            <div style="height: 10px"></div>
+            <div class="row">
+              <label for="bgBlur">上传图模糊强度</label>
+              <input id="bgBlur" type="range" min="0" max="24" value="6" />
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>文字</h3>
+            <div class="row">
+              <label for="mainText">主标题</label>
+              <input id="mainText" type="text" value="QuickSend" />
+            </div>
+            <div style="height: 10px"></div>
+            <div class="row two">
+              <div>
+                <label for="mainColor">主标题颜色</label>
+                <input id="mainColor" type="color" value="#ffffff" />
+              </div>
+              <div>
+                <label for="mainSize">主标题字号</label>
+                <input id="mainSize" type="range" min="24" max="200" value="84" />
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>划重点</h3>
+            <div class="row">
+              <label for="hlText">重点文字（留空则不显示）</label>
+              <input id="hlText" type="text" value="Fast &amp; Secure" />
+            </div>
+            <div style="height: 10px"></div>
+            <div class="row three">
+              <div>
+                <label for="hlBg">重点底色</label>
+                <input id="hlBg" type="color" value="#f59e0b" />
+              </div>
+              <div>
+                <label for="hlColor">重点文字颜色</label>
+                <input id="hlColor" type="color" value="#0f172a" />
+              </div>
+              <div>
+                <label for="hlSize">重点字号</label>
+                <input id="hlSize" type="range" min="12" max="160" value="44" />
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>底部标签</h3>
+            <div class="row">
+              <label for="tagText">标签内容（逗号分隔，或换行）</label>
+              <input id="tagText" type="text" value="QuickSend, 快速局域网传输" />
+            </div>
+            <div style="height: 10px"></div>
+            <div class="row two">
+              <div>
+                <label for="tagBg">标签背景颜色</label>
+                <input id="tagBg" type="color" value="#0b1220" />
+              </div>
+              <div>
+                <label for="tagSize">标签文字大小</label>
+                <input id="tagSize" type="range" min="10" max="96" value="32" />
+              </div>
+            </div>
+            <div style="height: 10px"></div>
+            <div class="row">
+              <label for="tagHeight">标签高度</label>
+              <input id="tagHeight" type="range" min="0" max="320" value="96" />
+            </div>
+            <div class="hint">标签内容留空或高度为 0 时不显示；标签会在底部自动换行。</div>
+          </div>
+
+          <div class="section">
+            <h3>小技巧</h3>
+            <div class="hint">
+              - 上传背景图后会自动使用“铺满裁剪”效果（类似封面图）。<br />
+              - 模糊值越大越“毛玻璃”，建议 4–12。<br />
+              - 底部标签可用于放版本号/URL/分类等信息。<br />
+              - 下载为 PNG（透明度已处理为实底背景）。
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <a href="https://quicksend.chat" target="_blank">quicksend.chat</a>
+      <a href="https://nanobanana3.vip" target="_blank">nanobanana3.vip</a>
+    </div>
+
+    <script>
+      const PRESET_BACKGROUNDS = [
+        { id: "gradient-1", name: "Sunset", type: "linear", a: "#f59e0b", b: "#ef4444" },
+        { id: "gradient-2", name: "Ocean", type: "linear", a: "#06b6d4", b: "#3b82f6" },
+        { id: "gradient-3", name: "Forest", type: "linear", a: "#10b981", b: "#047857" },
+        { id: "gradient-4", name: "Midnight", type: "linear", a: "#1e293b", b: "#0f172a" },
+        { id: "solid-1", name: "Dark", type: "solid", a: "#1e293b", b: null },
+        { id: "solid-2", name: "Brand", type: "solid", a: "#f59e0b", b: null },
+      ];
+
+      const el = {
+        canvas: document.getElementById("canvas"),
+        ratio: document.getElementById("ratio"),
+        bgSwatches: document.getElementById("bgSwatches"),
+        bgUpload: document.getElementById("bgUpload"),
+        bgBlur: document.getElementById("bgBlur"),
+        mainText: document.getElementById("mainText"),
+        mainColor: document.getElementById("mainColor"),
+        mainSize: document.getElementById("mainSize"),
+        hlText: document.getElementById("hlText"),
+        hlBg: document.getElementById("hlBg"),
+        hlColor: document.getElementById("hlColor"),
+        hlSize: document.getElementById("hlSize"),
+        tagText: document.getElementById("tagText"),
+        tagBg: document.getElementById("tagBg"),
+        tagSize: document.getElementById("tagSize"),
+        tagHeight: document.getElementById("tagHeight"),
+        btnDownload: document.getElementById("btnDownload"),
+        errorBox: document.getElementById("errorBox"),
+        previewBox: document.getElementById("previewBox"),
+      };
+
+      const state = {
+        ratio: { id: "16:9", w: 1280, h: 720 },
+        bg: PRESET_BACKGROUNDS[0],
+        uploadedDataUrl: "",
+        uploadedImage: null,
+      };
+
+      function showError(message) {
+        const msg = String(message || "").trim();
+        if (!msg) return;
+        el.errorBox.style.display = "block";
+        el.errorBox.textContent = msg;
+      }
+
+      function clearError() {
+        el.errorBox.style.display = "none";
+        el.errorBox.textContent = "";
+      }
+
+      function parseRatio(value) {
+        const parts = String(value || "").split("|");
+        const id = parts[0] || "16:9";
+        const w = Math.max(1, Number(parts[1] || 1280));
+        const h = Math.max(1, Number(parts[2] || 720));
+        return { id, w, h };
+      }
+
+      function applyCanvasSize() {
+        const { w, h } = state.ratio;
+        el.canvas.width = w;
+        el.canvas.height = h;
+        el.previewBox.style.aspectRatio = `${w} / ${h}`;
+      }
+
+      function drawRoundedRectPath(ctx, x, y, w, h, r) {
+        const rr = Math.max(0, Math.min(r, Math.min(w, h) / 2));
+        ctx.beginPath();
+        ctx.moveTo(x + rr, y);
+        ctx.arcTo(x + w, y, x + w, y + h, rr);
+        ctx.arcTo(x + w, y + h, x, y + h, rr);
+        ctx.arcTo(x, y + h, x, y, rr);
+        ctx.arcTo(x, y, x + w, y, rr);
+        ctx.closePath();
+      }
+
+      function drawBackground(ctx, w, h) {
+        if (state.uploadedImage) {
+          const img = state.uploadedImage;
+          const blurPx = Math.max(0, Number(el.bgBlur.value || 0));
+          ctx.save();
+          ctx.filter = blurPx > 0 ? `blur(${blurPx}px)` : "none";
+
+          const scale = Math.max(w / img.width, h / img.height);
+          const dw = img.width * scale;
+          const dh = img.height * scale;
+          const dx = (w - dw) / 2;
+          const dy = (h - dh) / 2;
+          ctx.drawImage(img, dx, dy, dw, dh);
+
+          ctx.restore();
+
+          ctx.fillStyle = "rgba(0,0,0,0.28)";
+          ctx.fillRect(0, 0, w, h);
+          return;
+        }
+
+        const bg = state.bg;
+        if (bg.type === "linear" && bg.a && bg.b) {
+          const g = ctx.createLinearGradient(0, 0, w, h);
+          g.addColorStop(0, bg.a);
+          g.addColorStop(1, bg.b);
+          ctx.fillStyle = g;
+        } else {
+          ctx.fillStyle = bg.a || "#1e293b";
+        }
+        ctx.fillRect(0, 0, w, h);
+      }
+
+      function parseHexColor(hex) {
+        const raw = String(hex || "").trim();
+        const m = raw.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+        if (!m) return { r: 0, g: 0, b: 0 };
+        let v = m[1].toLowerCase();
+        if (v.length === 3) v = v.split("").map((c) => c + c).join("");
+        const n = parseInt(v, 16);
+        return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+      }
+
+      function pickTextColorForBg(hex) {
+        const { r, g, b } = parseHexColor(hex);
+        const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+        return yiq >= 160 ? "#0f172a" : "#f8fafc";
+      }
+
+      function wrapTextLines(ctx, text, maxWidth) {
+        const src = String(text || "");
+        const baseLines = src.split(/\r?\n/);
+        const out = [];
+        for (const line of baseLines) {
+          const words = line.split(/\s+/).filter(Boolean);
+          if (words.length === 0) {
+            out.push("");
+            continue;
+          }
+          let cur = words[0];
+          for (let i = 1; i < words.length; i += 1) {
+            const next = `${cur} ${words[i]}`;
+            if (ctx.measureText(next).width <= maxWidth) {
+              cur = next;
+            } else {
+              out.push(cur);
+              cur = words[i];
+            }
+          }
+          out.push(cur);
+        }
+        return out;
+      }
+
+      function truncateToWidth(ctx, text, maxWidth) {
+        const s = String(text || "");
+        if (ctx.measureText(s).width <= maxWidth) return s;
+        const ell = "…";
+        let lo = 0;
+        let hi = s.length;
+        while (lo < hi) {
+          const mid = Math.floor((lo + hi) / 2);
+          const candidate = s.slice(0, mid) + ell;
+          if (ctx.measureText(candidate).width <= maxWidth) lo = mid + 1;
+          else hi = mid;
+        }
+        const cut = Math.max(0, lo - 1);
+        return s.slice(0, cut) + ell;
+      }
+
+      function parseTags(text) {
+        const raw = String(text || "").trim();
+        if (!raw) return [];
+        return raw
+          .split(/[,\n，;；]+/g)
+          .map((s) => String(s || "").trim())
+          .filter(Boolean)
+          .slice(0, 60);
+      }
+
+      function drawBottomTag(ctx, w, h) {
+        const tagText = String(el.tagText?.value || "").trim();
+        const tagHeight = Math.max(0, Number(el.tagHeight?.value || 0));
+        const tags = parseTags(tagText);
+        if (tags.length === 0 || tagHeight <= 0) return 0;
+
+        const tagBg = String(el.tagBg?.value || "#0b1220");
+        const fontSize = Math.max(10, Number(el.tagSize?.value || 32));
+        const textColor = pickTextColorForBg(tagBg);
+
+        const areaY = h - tagHeight;
+        const outerPadX = Math.max(18, Math.round(fontSize * 0.75));
+        const outerPadY = Math.max(14, Math.round(fontSize * 0.5));
+        const gapX = Math.max(10, Math.round(fontSize * 0.5));
+        const gapY = Math.max(10, Math.round(fontSize * 0.45));
+
+        const pillPadX = Math.max(14, Math.round(fontSize * 0.75));
+        const pillPadY = Math.max(7, Math.round(fontSize * 0.38));
+        const pillH = Math.max(18, Math.min(Math.round(fontSize + pillPadY * 2), Math.max(18, tagHeight - outerPadY * 2)));
+
+        const maxWidth = Math.max(1, w - outerPadX * 2);
+        const maxRows = Math.max(1, Math.floor((tagHeight - outerPadY * 2 + gapY) / (pillH + gapY)));
+
+        ctx.save();
+        ctx.font = `800 ${fontSize}px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial`;
+        ctx.textAlign = "left";
+        ctx.textBaseline = "middle";
+
+        const pillWidths = tags.map((t) => {
+          const tw = ctx.measureText(t).width;
+          return Math.ceil(tw + pillPadX * 2);
+        });
+
+        const rows = [];
+        let row = [];
+        let rowW = 0;
+        for (let i = 0; i < tags.length; i += 1) {
+          const pillW = pillWidths[i];
+          const need = row.length === 0 ? pillW : pillW + gapX;
+          if (rowW + need <= maxWidth) {
+            row.push({ text: tags[i], w: pillW });
+            rowW += need;
+          } else {
+            rows.push(row);
+            row = [{ text: tags[i], w: pillW }];
+            rowW = pillW;
+            if (rows.length >= maxRows) break;
+          }
+        }
+        if (rows.length < maxRows && row.length) rows.push(row);
+
+        let drawnCount = 0;
+        for (const r of rows) drawnCount += r.length;
+        const remaining = Math.max(0, tags.length - drawnCount);
+
+        if (remaining > 0 && rows.length > 0) {
+          const lastRow = rows[rows.length - 1];
+          const moreText = `+${remaining}`;
+          const moreW = Math.ceil(ctx.measureText(moreText).width + pillPadX * 2);
+          while (lastRow.length > 0) {
+            const test = [...lastRow, { text: moreText, w: moreW }];
+            let testW = 0;
+            for (let i = 0; i < test.length; i += 1) testW += test[i].w + (i === 0 ? 0 : gapX);
+            if (testW <= maxWidth) {
+              lastRow.push({ text: moreText, w: moreW, isMore: true });
+              break;
+            }
+            lastRow.pop();
+          }
+          if (lastRow.length === 0) lastRow.push({ text: truncateToWidth(ctx, moreText, maxWidth), w: Math.min(moreW, maxWidth), isMore: true });
+        }
+
+        const totalH = rows.length * pillH + (rows.length - 1) * gapY;
+        const areaH = tagHeight;
+        const availableH = Math.max(1, areaH - outerPadY * 2);
+        const yTop = areaY + outerPadY + Math.max(0, (availableH - totalH) / 2);
+
+        ctx.shadowColor = "rgba(0,0,0,0.18)";
+        ctx.shadowBlur = Math.max(6, Math.round(fontSize * 0.18));
+
+        for (let r = 0; r < rows.length; r += 1) {
+          const y = yTop + r * (pillH + gapY);
+          let rowWidth = 0;
+          for (let i = 0; i < rows[r].length; i += 1) rowWidth += rows[r][i].w + (i === 0 ? 0 : gapX);
+          let x = rowWidth <= maxWidth ? Math.max(outerPadX, (w - rowWidth) / 2) : outerPadX;
+          for (let i = 0; i < rows[r].length; i += 1) {
+            const item = rows[r][i];
+            ctx.fillStyle = tagBg;
+            drawRoundedRectPath(ctx, x, y, item.w, pillH, pillH / 2);
+            ctx.fill();
+
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = textColor;
+            const ty = y + pillH / 2;
+            const tx = x + pillPadX;
+            const safeText = truncateToWidth(ctx, item.text, Math.max(1, item.w - pillPadX * 2));
+            ctx.fillText(safeText, tx, ty);
+            ctx.shadowBlur = Math.max(6, Math.round(fontSize * 0.18));
+
+            x += item.w + gapX;
+          }
+        }
+
+        ctx.restore();
+        return tagHeight;
+      }
+
+      function drawText(ctx, w, h) {
+        const title = String(el.mainText.value || "");
+        const titleSize = Number(el.mainSize.value || 84);
+        const titleColor = String(el.mainColor.value || "#ffffff");
+        const hlText = String(el.hlText.value || "");
+        const hlSize = Number(el.hlSize.value || 44);
+        const hlBg = String(el.hlBg.value || "#f59e0b");
+        const hlColor = String(el.hlColor.value || "#0f172a");
+
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+
+        const reservedBottom = Math.max(0, Number(el.tagHeight?.value || 0));
+        const hasBottomTag = reservedBottom > 0 && parseTags(String(el.tagText?.value || "")).length > 0;
+        const shiftY = hasBottomTag ? Math.min(reservedBottom * 0.35, h * 0.22) : 0;
+        const centerY = h / 2 - shiftY;
+        const titleY = centerY - (hlText ? hlSize * 0.9 : 0);
+
+        ctx.save();
+        ctx.font = `800 ${titleSize}px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial`;
+        ctx.fillStyle = titleColor;
+        ctx.shadowColor = "rgba(0,0,0,0.45)";
+        ctx.shadowBlur = Math.max(8, Math.round(titleSize * 0.14));
+        ctx.fillText(title, w / 2, titleY);
+        ctx.restore();
+
+        if (!hlText) return;
+
+        ctx.save();
+        ctx.font = `800 ${hlSize}px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial`;
+        const metrics = ctx.measureText(hlText);
+        const padX = hlSize * 0.55;
+        const padY = hlSize * 0.32;
+        const pillW = metrics.width + padX * 2;
+        const pillH = hlSize + padY * 2;
+        const pillX = w / 2 - pillW / 2;
+        const pillY = centerY + titleSize * 0.55;
+
+        ctx.fillStyle = hlBg;
+        ctx.shadowColor = "rgba(0,0,0,0.18)";
+        ctx.shadowBlur = Math.max(6, Math.round(hlSize * 0.12));
+        drawRoundedRectPath(ctx, pillX, pillY, pillW, pillH, pillH / 2);
+        ctx.fill();
+
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = hlColor;
+        ctx.fillText(hlText, w / 2, pillY + pillH / 2);
+        ctx.restore();
+      }
+
+      function render() {
+        clearError();
+        const ctx = el.canvas.getContext("2d");
+        if (!ctx) {
+          showError("Canvas 初始化失败：无法获取 2D 上下文。");
+          return;
+        }
+        const w = el.canvas.width;
+        const h = el.canvas.height;
+        ctx.clearRect(0, 0, w, h);
+        drawBackground(ctx, w, h);
+        drawText(ctx, w, h);
+        drawBottomTag(ctx, w, h);
+      }
+
+      function setActiveSwatch(id) {
+        const items = Array.from(el.bgSwatches.querySelectorAll(".swatch"));
+        for (const it of items) {
+          it.classList.toggle("active", it.dataset.id === id);
+        }
+      }
+
+      function buildSwatches() {
+        el.bgSwatches.innerHTML = "";
+        for (const bg of PRESET_BACKGROUNDS) {
+          const d = document.createElement("div");
+          d.className = "swatch";
+          d.dataset.id = bg.id;
+          d.title = bg.name;
+          if (bg.type === "linear") d.style.background = `linear-gradient(135deg, ${bg.a} 0%, ${bg.b} 100%)`;
+          else d.style.background = bg.a;
+          d.addEventListener("click", () => {
+            state.bg = bg;
+            state.uploadedImage = null;
+            state.uploadedDataUrl = "";
+            el.bgUpload.value = "";
+            setActiveSwatch(bg.id);
+            render();
+          });
+          el.bgSwatches.appendChild(d);
+        }
+        setActiveSwatch(state.bg.id);
+      }
+
+      function readFileAsDataUrl(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result || ""));
+          reader.onerror = () => reject(new Error("read_failed"));
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function loadImage(dataUrl) {
+        return new Promise((resolve, reject) => {
+          const img = new window.Image();
+          img.decoding = "async";
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(new Error("image_load_failed"));
+          img.src = dataUrl;
+        });
+      }
+
+      async function onUploadBackground(file) {
+        try {
+          if (!file) return;
+          const dataUrl = await readFileAsDataUrl(file);
+          const img = await loadImage(dataUrl);
+          state.uploadedDataUrl = dataUrl;
+          state.uploadedImage = img;
+          setActiveSwatch("");
+          render();
+        } catch (e) {
+          showError("背景图片加载失败，请更换图片重试。");
+        }
+      }
+
+      function downloadPng() {
+        try {
+          const a = document.createElement("a");
+          a.download = `cover-${Date.now()}.png`;
+          a.href = el.canvas.toDataURL("image/png");
+          a.click();
+        } catch (e) {
+          showError("下载失败：浏览器阻止了下载或 Canvas 导出失败。");
+        }
+      }
+
+      function bindEvents() {
+        el.ratio.addEventListener("change", () => {
+          state.ratio = parseRatio(el.ratio.value);
+          applyCanvasSize();
+          render();
+        });
+
+        el.bgUpload.addEventListener("change", () => {
+          const f = el.bgUpload.files && el.bgUpload.files[0];
+          void onUploadBackground(f);
+        });
+
+        el.bgBlur.addEventListener("input", () => render());
+
+        const inputs = [
+          el.mainText, el.mainColor, el.mainSize,
+          el.hlText, el.hlBg, el.hlColor, el.hlSize,
+          el.tagText, el.tagBg, el.tagSize, el.tagHeight,
+        ];
+        for (const i of inputs) {
+          i.addEventListener("input", () => render());
+        }
+
+        el.btnDownload.addEventListener("click", () => downloadPng());
+      }
+
+      function findRatioOptionById(ratioId) {
+        const id = String(ratioId || "").trim();
+        if (!id) return null;
+        const opts = Array.from(el.ratio?.options || []);
+        for (const o of opts) {
+          const v = String(o.value || "");
+          const parts = v.split("|");
+          if (parts[0] === id) return o;
+        }
+        return null;
+      }
+
+      function getCoverState() {
+        return {
+          ratio: { ...state.ratio },
+          bgPresetId: state.uploadedImage ? null : (state.bg?.id || null),
+          hasUploadedBg: Boolean(state.uploadedImage),
+          blur: Number(el.bgBlur?.value || 0),
+          mainText: String(el.mainText?.value || ""),
+          mainColor: String(el.mainColor?.value || ""),
+          mainSize: Number(el.mainSize?.value || 0),
+          highlightText: String(el.hlText?.value || ""),
+          highlightBg: String(el.hlBg?.value || ""),
+          highlightColor: String(el.hlColor?.value || ""),
+          highlightSize: Number(el.hlSize?.value || 0),
+          tagsText: String(el.tagText?.value || ""),
+          tagBg: String(el.tagBg?.value || ""),
+          tagSize: Number(el.tagSize?.value || 0),
+          tagHeight: Number(el.tagHeight?.value || 0),
+        };
+      }
+
+      async function setCoverState(payload) {
+        const p = payload && typeof payload === "object" ? payload : {};
+
+        if (typeof p.ratioId === "string") {
+          const opt = findRatioOptionById(p.ratioId);
+          if (opt) {
+            el.ratio.value = opt.value;
+            state.ratio = parseRatio(el.ratio.value);
+            applyCanvasSize();
+          }
+        }
+
+        if (typeof p.bgPresetId === "string") {
+          const id = String(p.bgPresetId || "").trim();
+          const next = PRESET_BACKGROUNDS.find((b) => b.id === id);
+          if (next) {
+            state.bg = next;
+            state.uploadedImage = null;
+            state.uploadedDataUrl = "";
+            if (el.bgUpload) el.bgUpload.value = "";
+            setActiveSwatch(next.id);
+          }
+        }
+
+        if (typeof p.bgDataUrl === "string") {
+          const dataUrl = String(p.bgDataUrl || "").trim();
+          if (dataUrl.startsWith("data:image/")) {
+            const img = await loadImage(dataUrl);
+            state.uploadedDataUrl = dataUrl;
+            state.uploadedImage = img;
+            if (el.bgUpload) el.bgUpload.value = "";
+            setActiveSwatch("");
+          }
+        }
+
+        const map = [
+          ["blur", el.bgBlur],
+          ["mainText", el.mainText],
+          ["mainColor", el.mainColor],
+          ["mainSize", el.mainSize],
+          ["highlightText", el.hlText],
+          ["highlightBg", el.hlBg],
+          ["highlightColor", el.hlColor],
+          ["highlightSize", el.hlSize],
+          ["tagsText", el.tagText],
+          ["tagBg", el.tagBg],
+          ["tagSize", el.tagSize],
+          ["tagHeight", el.tagHeight],
+        ];
+
+        for (const [k, input] of map) {
+          if (!input) continue;
+          if (!Object.prototype.hasOwnProperty.call(p, k)) continue;
+          const v = p[k];
+          if (typeof input.value === "string") input.value = String(v ?? "");
+        }
+
+        render();
+        return getCoverState();
+      }
+
+      function exportPngDataUrl() {
+        return el.canvas.toDataURL("image/png");
+      }
+
+      function respondToMessage(source, message) {
+        try {
+          const target = (source && typeof source.postMessage === "function")
+            ? source
+            : (window.opener && typeof window.opener.postMessage === "function")
+              ? window.opener
+              : (window.parent && window.parent !== window && typeof window.parent.postMessage === "function")
+                ? window.parent
+                : null;
+          if (!target) return;
+          target.postMessage(message, "*");
+        } catch (e) {}
+      }
+
+      function onMessage(event) {
+        const data = event?.data;
+        if (!data || typeof data !== "object") return;
+        if (data.scope !== "qs_cover") return;
+
+        const type = String(data.type || "");
+        const requestId = data.requestId ? String(data.requestId) : "";
+        const source = event.source;
+
+        if (type === "ping") {
+          respondToMessage(source, { scope: "qs_cover", type: "pong", requestId, ok: true, state: getCoverState() });
+          return;
+        }
+
+        if (type === "get") {
+          respondToMessage(source, { scope: "qs_cover", type: "get_result", requestId, ok: true, state: getCoverState() });
+          return;
+        }
+
+        if (type === "export") {
+          try {
+            const dataUrl = exportPngDataUrl();
+            respondToMessage(source, {
+              scope: "qs_cover",
+              type: "export_result",
+              requestId,
+              ok: true,
+              format: "png",
+              encoding: "dataUrl",
+              width: el.canvas.width,
+              height: el.canvas.height,
+              dataUrl,
+            });
+          } catch (e) {
+            respondToMessage(source, { scope: "qs_cover", type: "export_result", requestId, ok: false, error: "export_failed" });
+          }
+          return;
+        }
+
+        if (type === "set") {
+          Promise.resolve()
+            .then(() => setCoverState(data.payload || {}))
+            .then((state) => respondToMessage(source, { scope: "qs_cover", type: "set_result", requestId, ok: true, state }))
+            .catch(() => respondToMessage(source, { scope: "qs_cover", type: "set_result", requestId, ok: false, error: "set_failed" }));
+          return;
+        }
+      }
+
+      function applyFromQuery() {
+        const qs = new URLSearchParams(String(location.search || "").replace(/^\?/, ""));
+        const ratioId = qs.get("ratio") || "";
+        const bgPresetId = qs.get("bg") || "";
+
+        const payload = {
+          ratioId: ratioId || undefined,
+          bgPresetId: bgPresetId || undefined,
+          blur: qs.get("blur") || undefined,
+          mainText: qs.get("title") || undefined,
+          mainColor: qs.get("titleColor") || undefined,
+          mainSize: qs.get("titleSize") || undefined,
+          highlightText: qs.get("highlight") || undefined,
+          highlightBg: qs.get("highlightBg") || undefined,
+          highlightColor: qs.get("highlightColor") || undefined,
+          highlightSize: qs.get("highlightSize") || undefined,
+          tagsText: qs.get("tags") || undefined,
+          tagBg: qs.get("tagBg") || undefined,
+          tagSize: qs.get("tagSize") || undefined,
+          tagHeight: qs.get("tagHeight") || undefined,
+        };
+
+        for (const k of Object.keys(payload)) {
+          if (payload[k] === undefined || payload[k] === null || payload[k] === "") delete payload[k];
+        }
+
+        return setCoverState(payload);
+      }
+
+      (function init() {
+        try {
+          state.ratio = parseRatio(el.ratio.value);
+          buildSwatches();
+          bindEvents();
+          applyCanvasSize();
+          render();
+          window.addEventListener("message", onMessage);
+          window.QSCoverGenerator = {
+            version: "1.0.0",
+            get: () => getCoverState(),
+            set: (payload) => setCoverState(payload),
+            exportPngDataUrl: () => exportPngDataUrl(),
+          };
+          void applyFromQuery();
+        } catch (e) {
+          showError("初始化失败：请刷新页面重试。");
+        }
+      })();
+    </script>
+  </body>
 </html>
